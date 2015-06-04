@@ -1,0 +1,22 @@
+
+/* Default is to not display javascript - reset by .js if it runs */
+
+div.needjs, div.configuration
+{ 
+	display: none 
+}
+
+div.coordentry
+{
+	 /* max-width: 30em; */
+}
+
+div.coordentry input[type="text"] 
+{
+        width:100%;
+}
+
+input[type="text"].invalidcoord
+{
+	background-color: #FFDDDD;
+}
