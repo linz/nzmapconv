@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>NZ Map Reference Converter</title>
+  <!--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.16/require.min.js"></script>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="require.min.js"></script>
+    -->
+  <script src="jquery-1.10.1.min.js"></script>
+  <script src="cookies.min.js"></script>
+  <link href="bootstrap.min.css" rel="stylesheet">
+  <script src="bootstrap.min.js"></script>
+  <script src="linz-geodetic.js"></script>
+  <script src="linz-coordtype.js"></script>
+  <script src="nzgd2kgrid9911.js"></script>
+  <script src="coordentry.js"></script>
+  <script src="nzmapconv.js"></script>
+  <link href="nzmapconv.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <div id="nojs">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h1>Incompatible browser</h1>
+        <p>
+          The NZMapConv application is not working in your browser. It may be that you
+          are using an incompatible browser (such as older versions of Internet Explorer),
+          or that you have disabled javascript in your browser.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conversion -->
+  <div id="needjs">
+    <div id="converter" class="container-fluid">
+      <div class="col-md-12">
+        <div class="btn-group" role="group">
+          <button id="showprev" type="button" class="btn btn-primary">Prev</button>
+        </div>
+        <div class="btn-group" role="group">
+          <button id="shownext" type="button" class="btn btn-primary">Next</button>
+        </div>
+        <div class="btn-group" role="group">
+          <button id="doconfig" type="button" class="btn btn-primary">Config</button>
+        </div>
+        <div class="btn-group" role="group">
+          <button id="showhelp" type="button" class="btn btn-primary">Help</button>
+        </div>
+        <div>
+
+        </div class="coordentrycol">
+        <div class="mapref coordentry">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Enter coordinate</h3>
+            </div>
+            <div class="panel-body">
+              <input id="entercrd" class="coord" type="text" data-coordsys="nzgd2000 nztm nztopo50" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 coordentrycol nzgd1949">
+          <div class="mapref coordentry">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">NZ260 map reference</h3>
+              </div>
+              <div class="panel-body">
+                <input id="nz260" class="coord addcopybutton" type="text" data-coordsys="nz260" readonly />
+              </div>
+            </div>
+          </div>
+
+          <div class="projct coordentry">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">NZMG coordinates</h3>
+              </div>
+              <div class="panel-body">
+                <input id="nzmg" class="coord addcopybutton" type="text" data-coordsys="nzmg" readonly />
+              </div>
+            </div>
+          </div>
+
+          <div class="latlon coordentry">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">NZGD49</h3>
+              </div>
+              <div class="panel-body">
+                <input id="nzgd49" class="coord addcopybutton" type="text" data-coordsys="nzgd49" readonly />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-6 coordentrycol nzgd2000">
+
+          <div class="mapref coordentry">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">NZ Topo50 map reference</h3>
+              </div>
+              <div class="panel-body">
+                <input id="nztopo50" class="coord addcopybutton" type="text" data-coordsys="nztopo50" readonly />
+              </div>
+            </div>
+          </div>
+
+          <div class="projct coordentry">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">NZTM coordinates</h3>
+              </div>
+              <div class="panel-body">
+                <input id="nztm" class="coord addcopybutton" type="text" data-coordsys="nztm" data-format="precision:2"
+                  readonly />
+              </div>
+            </div>
+          </div>
+
+          <div class="latlon coordentry">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">NZGD2000/WGS84</h3>
+              </div>
+              <div class="panel-body">
+                <input id="nzgd2000" class="coord addcopybutton" type="text" data-coordsys="nzgd2000" readonly />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Configuration -->
+    <div id="configuration" class="container-fluid">
+      <div class="btn-group" role="group">
+        <button id="saveconfig" type="button" class="btn btn-primary">Apply</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button id="cancelconfig" type="button" class="btn btn-primary">Cancel</button>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Datums</h3>
+        </div>
+        <div class="panel-body">
+          <input name="shownzgd2000" type="checkbox">Display NZGD2000 coordinates</input>
+          <br />
+          <input name="shownzgd1949" type="checkbox">Display NZGD1949 coordinates</input>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Map reference coordinates</h3>
+        </div>
+        <div class="panel-body">
+          <input name="showmapref" type="checkbox">Display Map References</input>
+          <br />
+          <input name="maprefdigits" value="6" type="radio">6 digit refs</input>
+          <input name="maprefdigits" value="8" type="radio">8 digit refs</input>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Latitude/longitude coordinates</h3>
+        </div>
+        <div class="panel-body">
+          <input name="showlatlon" type="checkbox">Display Latitude/longitude</input>
+          <br />
+          <input name="latlonformat" value="D" type="radio">Degrees</input>
+          <input name="latlonformat" value="DM" type="radio">Deg/min</input>
+          <input name="latlonformat" value="DMS" type="radio">Deg/min/sec</input>
+          <br />
+          <input name="latlonorder" value="EN" type="radio">Longitude/latitude</input>
+          <input name="latlonorder" value="NE" type="radio">Latitude/longitude</input>
+          <br />
+          <input name="latlonprecision" value="0" type="text" size="1" />Number of decimal places
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Easting/northing coordinates</h3>
+        </div>
+        <div class="panel-body">
+          <input name="showprojct" type="checkbox">Display Easting/northings</input>
+          <br />
+          <input name="projctorder" value="EN" type="radio">Easting/northing</input>
+          <input name="projctorder" value="NE" type="radio">Northing/easting</input>
+          <br />
+          <input name="projctprecision" value="0" type="text" size="1" />Number of decimal places
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

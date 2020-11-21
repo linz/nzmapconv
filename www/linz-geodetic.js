@@ -619,8 +619,9 @@ LINZ.Geodetic.Location.prototype.as=function( coordSysCode )
     var coord=this.coordinates[crdSysStages[0]];
     for( i=1; i < crdSysStages.length; i++ )
     {
-        tfm=transformStages[i];
+        tfm = transformStages[i];
         coord = tfm[1] ? tfm[0].apply(coord) : tfm[0].unapply(coord);
+        if (coord === undefined) return;
         this.coordinates[crdSysStages[i]]=coord;
     }
     return this.coordinates[coordSysCode];

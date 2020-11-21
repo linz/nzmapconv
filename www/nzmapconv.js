@@ -1,153 +1,6 @@
 var nzmapconv = nzmapconv || {};
 var LINZ=LINZ || {};
 
-nzmapconv.CoordEntry=function(id,cstype)
-{
-    this.id=id;
-    this.cstype=cstype;
-    this.entryField=$('input#'+id);
-    this.preKeyText='';
-    var current=this;
-    // Handle key events (13=calc, otherwise check validity)
-    this.entryField.keydown(function(e){current.onKeyDown(e);});
-    this.entryField.keyup(function(e){current.onKeyUp(e);});
-    // Paste event - check validity and try to convert
-     this.entryField.on('paste', function () {
-          setTimeout(function () {
-            current.onPaste();
-            }, 4); // Apparently 4ms is official timeout
-          });   
-    this.entryField.click(function(){$(this).select();});
-    this.setTitle();
-}
-
-nzmapconv.CoordEntry.entryFields=[];
-
-/* Optional callback function.  Probably should be event? */
-nzmapconv.fieldConverted=null;
-
-nzmapconv.CoordEntry.prototype.clearField=function( coord )
-{
-    this.entryField.val("");
-    this.entryField.removeClass('invalidcoord');
-}
-
-nzmapconv.CoordEntry.prototype.setCoord=function( coord )
-{
-    this.entryField.val(this.cstype.format(coord));
-    this.preKeyText=this.entryField.val();
-}
-
-nzmapconv.CoordEntry.prototype.setTitle=function()
-{
-    this.entryField.prop('title','E.g. '+this.cstype.example());
-}
-    
-
-nzmapconv.CoordEntry.prototype.clearOtherFields=function()
-{
-    var current=this;
-    $.each(nzmapconv.CoordEntry.entryFields,function(){
-        if( this !== current) this.clearField();
-    });
-}
-
-nzmapconv.CoordEntry.prototype.setOtherFields=function( coord )
-{
-    var current=this;
-    $.each(nzmapconv.CoordEntry.entryFields,function(){
-        if( this !== current) this.setCoord(coord);
-    });
-}
-
-nzmapconv.CoordEntry.applyToClass=function( cls, func )
-{
-    $.each(nzmapconv.CoordEntry.entryFields,function(){
-        if( $('div.'+cls+' #'+this.id).length ) func(this);
-    });
-}
-
-nzmapconv.CoordEntry.reloadOptions=function( cls, func )
-{
-    $.each(nzmapconv.CoordEntry.entryFields,function(){
-       this.setTitle(); 
-    });
-}
-
-nzmapconv.CoordEntry.prototype.tryConvert=function( fireEvent )
-{
-        var coord=this.cstype.parse(this.entryField.val());
-        if( coord !== undefined )
-        {
-            this.setOtherFields( coord );
-            this.entryField.select();
-            this.preKeyText=this.entryField.val();
-            if( fireEvent && nzmapconv.CoordEntry.fieldConverted ) nzmapconv.CoordEntry.fieldConverted(this);
-        }
-        this.setInvalidClass();
-}
-
-
-nzmapconv.CoordEntry.prototype.onKeyDown=function( e )
-{
-    this.preKeyText=this.entryField.val();
-}
-
-nzmapconv.CoordEntry.prototype.onKeyUp=function( e )
-{
-    if (e.keyCode == 13) 
-    {
-        this.tryConvert(true);
-    }
-    else if( this.entryField.val() != this.preKeyText )
-    {
-        this.clearOtherFields();
-        this.setInvalidClass();
-    }
-}
-
-nzmapconv.CoordEntry.prototype.text=function()
-{
-    return this.entryField.val();
-}
-
-nzmapconv.CoordEntry.prototype.setText=function( newtext )
-{
-    this.entryField.val(newtext);
-    this.tryConvert(false); /* Don't fire conversion event as assume from resetting history...*/
-}
-
-nzmapconv.CoordEntry.prototype.onPaste=function()
-{
-    this.tryConvert(true);
-}
-
-nzmapconv.CoordEntry.prototype.setInvalidClass=function()
-{
-    var coordstr=this.entryField.val();
-    var isvalid = true;
-    if( coordstr != '' )
-    {
-        coord=this.cstype.parse(this.entryField.val());
-        isvalid = (coord !== undefined);
-    }
-    if( isvalid )
-    {
-        this.entryField.removeClass('invalidcoord');
-    }
-    else
-    {
-        this.entryField.addClass('invalidcoord');
-    }
-}
-
-nzmapconv.CoordEntry.prototype.setCoordOptions=function( options )
-{
-    this.cstype.setOptions( options );
-}
-
-////////////////////////////////////////////////////////////////////////////
-
 nzmapconv.Config=function()
 {
 }
@@ -287,15 +140,15 @@ nzmapconv.Config.apply=function()
 
 nzmapconv.showConverter=function()
 {
-    $('.configuration').hide();
-    $('.converter').show();
+    $('div#configuration').hide();
+    $('div#converter').show();
 }
 
 nzmapconv.showConfiguration=function()
 {
     nzmapconv.Config.loadForm();
-    $('.converter').hide();
-    $('.configuration').show();
+    $('div#converter').hide();
+    $('div#configuration').show();
 }
 
 nzmapconv.updateConfiguration=function()
@@ -368,21 +221,13 @@ nzmapconv.setButtonStates=function()
     $("#shownext").prop('disabled',! nzmapconv.haveNext());
 }
 
-nzmapconv.setup = function()
-{
+nzmapconv.setup = function () {
 
     nzmapconv.setButtonStates();
 
-    nzmapconv.CoordEntry.entryFields=[
-        new nzmapconv.CoordEntry('nz260',new LINZ.CoordType.NZMS260MapRef()),
-        new nzmapconv.CoordEntry('nztopo50',new LINZ.CoordType.Topo50MapRef()),
-        new nzmapconv.CoordEntry('nzgd49',new LINZ.CoordType.LatLon('NZGD1949')),
-        new nzmapconv.CoordEntry('nzgd2000',new LINZ.CoordType.LatLon('NZGD2000')),
-        new nzmapconv.CoordEntry('nzmg',new LINZ.CoordType.Projection('NZMG')),
-        new nzmapconv.CoordEntry('nztm',new LINZ.CoordType.Projection('NZTM')),
-        ];
+    $('input.coord').each(function () { new nzmapconv.CoordEntry($(this)) });
 
-    nzmapconv.CoordEntry.fieldConverted=nzmapconv.addToHistory;
+    nzmapconv.CoordEntry.fieldConverted = nzmapconv.addToHistory;
 
     $("#doconfig").click( nzmapconv.showConfiguration);
     $("#cancelconfig").click(nzmapconv.showConverter);
@@ -391,11 +236,11 @@ nzmapconv.setup = function()
     $("#shownext").click(nzmapconv.showNext);
     $("#showhelp").click(function(){ window.location.href="help/index.html";});
 
-    nzmapconv.Config.reload();
-    nzmapconv.Config.apply();
+    //nzmapconv.Config.reload();
+    //zmapconv.Config.apply();
     
-    $('.nojs').hide();
-    $('.needjs').show();
+    $('#nojs').hide();
+    $('#needjs').show();
 }
 
 

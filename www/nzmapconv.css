@@ -1,7 +1,7 @@
 
 /* Default is to not display javascript - reset by .js if it runs */
 
-div.needjs, div.configuration
+div#needjs, div#configuration
 { 
 	display: none 
 }
@@ -19,4 +19,12 @@ div.coordentry input[type="text"]
 input[type="text"].invalidcoord
 {
 	background-color: #FFDDDD;
+}
+
+input.copybutton
+{
+	background:url('copy_icon.png') no-repeat;
+	border: none;
+	height: 32px;
+	width: 32px;
 }

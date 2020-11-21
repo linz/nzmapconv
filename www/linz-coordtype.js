@@ -233,8 +233,10 @@ LINZ.CoordType.LatLon.prototype._dms=function( ordinate )
         ordinate=Math.round(ordinate)/mult;
         var deg=Math.floor(ordinate);
         var min=(ordinate-deg)*60;
-        min=min.toFixed(precision);
-        if( precision > 0 ) { min='00'.substr(min.indexOf('.'))+min; }
+        min = min.toFixed(precision);
+        var nd = min.indexOf('.')
+        if (nd < 0) nd = min.length;
+        min = '00'.substr(nd) + min;        
         return deg.toString()+' '+min;
     }
 
@@ -248,8 +250,10 @@ LINZ.CoordType.LatLon.prototype._dms=function( ordinate )
     min=min.toString();
     if( min.length < 2 ) min='0'+min;
     var sec=(sec-min)*60;
-    sec=sec.toFixed(precision);
-    if( precision > 0 ) { sec='00'.substr(sec.indexOf('.'))+sec; }
+    sec = sec.toFixed(precision);
+    var nd = sec.indexOf('.')
+    if (nd < 0) nd = sec.length;
+    sec = '00'.substr(nd) + sec;
     return deg.toString()+' '+min+' '+sec;
 }
 
@@ -335,6 +339,9 @@ LINZ.CoordType.Projection.prototype.parse=function( coordstr )
         axis2='N'
         ord1=parseFloat(match[1]);
         ord2=parseFloat(match[2]);
+    }
+    else {
+        return;
     }
 
     if( axis1 == 'E' && axis2 != 'N' ) return;
@@ -425,7 +432,8 @@ LINZ.CoordType.MapRef.prototype.parse=function( mapref )
 
 LINZ.CoordType.MapRef.prototype.format=function( location )
 {
-    var coordinates=location.as(this.coordSys);
+    var coordinates = location.as(this.coordSys);
+    if (coordinates === undefined) return;
     var mape=coordinates[0];
     var mapn=coordinates[1];
 
