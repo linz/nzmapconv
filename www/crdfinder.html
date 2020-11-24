@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>NZ Map Reference Converter</title>
+  <script src="jquery-1.10.1.min.js"></script>
+  <script src="cookies.min.js"></script>
+  <script src="linz-geodetic.js"></script>
+  <script src="linz-coordtype.js"></script>
+  <script src="nzgd2kgrid9911.js"></script>
+  <script src="coordentry.js"></script>
+  <link href="coordentry.css" rel="stylesheet">
+  <link href="crdfinder.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <div class="nojs">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h1>Incompatible browser</h1>
+        <p>
+          The NZMapConv application is not working in your browser. It may be that you
+          are using an incompatible browser (such as older versions of Internet Explorer),
+          or that you have disabled javascript in your browser.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conversion -->
+  <div class="needjs">
+    <div>
+
+      <div class="coord-entry-box">
+        <div class="coord-title">
+          Enter a coordinate
+        </div>
+        <div class="coord-entry">
+          <input id="entercrd" class="coord-entry" type="text" data-coordsys="nzgd2000 nztm nztopo50" />
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="coord-table">
+
+        <div class="coord">
+          <div class="coord-title">
+            NZGD2000
+          </div>
+          <div class="coord-value">
+            <input id="nzgd2000" class="coord-entry addcopybutton" type="text" data-coordsys="nzgd2000"
+              data-format="format:DMS precision:0 order:EN" readonly disabled />
+          </div>
+        </div>
+
+        <div class="coord">
+          <div class="coord-title">
+            NZGD2000 (decimal)
+          </div>
+          <div class="coord-value">
+            <input id="nzgd2000d" class="coord-entry addcopybutton" type="text" data-coordsys="nzgd2000"
+              data-format="format:D precision:4 order:EN" readonly disabled />
+          </div>
+        </div>
+
+        <div class="coord">
+          <div class="coord-title">
+            NZTM
+          </div>
+          <div class="coord-value">
+            <input id="nztm" class="coord-entry addcopybutton" type="text" data-coordsys="nztm"
+              data-format="order:EN precision:0" readonly disabled />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="have-coord-element">
+      View in <a href="" target="_blank" class="coord-url"
+        data-url="http://maps.google.com/?q={lat},{lon}&ll={lat},{lon}&z=10">Google
+        maps</a>
+    </div>
+
+  </div>
+</body>
+
+</html>

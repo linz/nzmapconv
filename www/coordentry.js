@@ -1,6 +1,8 @@
 var nzmapconv = nzmapconv || {};
 var LINZ = LINZ || {};
-nzmapconv.entryFields = []
+nzmapconv.entryFields = [];
+nzmapconv.coordHandlers = [];
+
 nzmapconv.CoordEntry = function (entryfield) {
     this.entryField = entryfield;
     this.id = entryfield.attr('id');
@@ -46,7 +48,6 @@ nzmapconv.CoordEntry = function (entryfield) {
     });
     entryfield.click(function () { $(this).select(); });
     if (entryfield.hasClass('addcopybutton')) {
-        entryfield.wrap($('<div>'));
         var copybutton = $("<input>");
         copybutton.addClass("copybutton");
         copybutton.click(function () {
@@ -63,6 +64,19 @@ nzmapconv.CoordEntry = function (entryfield) {
 
 /* Optional callback function.  Probably should be event? */
 nzmapconv.fieldConverted = null;
+nzmapconv.coordIsNull = true;
+
+nzmapconv.CoordEntry.prototype.setCoordEvent = function (coord) {
+    if (coord === null && nzmapconv.coordIsNull) return;
+    nzmapconv.coordIsNull = (coord === null);
+    for (var f of nzmapconv.coordHandlers) {
+        f(coord);
+    }
+}
+
+nzmapconv.addCoordHandler = function (func) {
+    nzmapconv.coordHandlers.push(func);
+}
 
 nzmapconv.CoordEntry.prototype.clearField = function (coord) {
     this.entryField.val("");
@@ -126,6 +140,7 @@ nzmapconv.CoordEntry.prototype.tryConvert = function (fireEvent) {
         var coord = cstype.parse(this.entryField.val());
         if (coord !== undefined) {
             this.setOtherFields(coord);
+            this.setCoordEvent(coord);
             this.entryField.select();
             this.preKeyText = this.entryField.val();
             if (fireEvent && nzmapconv.CoordEntry.fieldConverted) nzmapconv.CoordEntry.fieldConverted(this);
@@ -146,6 +161,7 @@ nzmapconv.CoordEntry.prototype.onKeyUp = function (e) {
     }
     else if (this.entryField.val() != this.preKeyText) {
         this.clearOtherFields();
+        this.setCoordEvent(null)
         this.setInvalidClass();
     }
 }
@@ -188,3 +204,43 @@ nzmapconv.CoordEntry.prototype.setCoordOptions = function (options) {
         cstype.setOptions(options);
     }
 }
+
+
+nzmapconv.CoordEntry.setCoord = function (coord) {
+    var lat = '';
+    var lon = '';
+    var iscoord = false;
+    var nzgd2000 = null;
+    if (coord != null) coord = coord.coordinates.NZGD2000;
+    if (coord != null) {
+        lon = coord[0].toString();
+        lat = coord[1].toString();
+        iscoord = true;
+    }
+    $('span.lon-coord').text(lon);
+    $('span.lat-coord').text(lat);
+    $('a.coord-url').each(function () {
+        var el = $(this);
+        var url = el.data('url')
+        url = url.replace(/\{lon\}/g, lon).replace(/\{lat\}/g, lat);
+        el.attr('href', url);
+    });
+    if (iscoord) {
+        $('.have-coord-element').show();
+        $('.no-coord-element').hide();
+    }
+    else {
+        $('.have-coord-element').hide();
+        $('.no-coord-element').show();
+    }
+}
+
+$(document).ready(function () {
+    $('input.coord-entry').each(function () {
+        new nzmapconv.CoordEntry($(this))
+    });
+    nzmapconv.addCoordHandler(nzmapconv.CoordEntry.setCoord);
+    nzmapconv.CoordEntry.setCoord(null);
+    $('.nojs').hide();
+    $('.needjs').show();
+})

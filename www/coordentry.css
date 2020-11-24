@@ -1,0 +1,16 @@
+.needjs 
+{
+    display: none;
+}
+
+input.copybutton
+{
+	background:url('copy_icon.png') no-repeat;
+	border: none;
+	height: 21px;
+	width: 21px;
+	vertical-align: middle;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+}

@@ -1,7 +1,7 @@
 
 /* Default is to not display javascript - reset by .js if it runs */
 
-div#needjs, div#configuration
+.needjs, div.configuration
 { 
 	display: none 
 }
@@ -13,7 +13,12 @@ div.coordentry
 
 div.coordentry input[type="text"] 
 {
-        width:100%;
+		width:100%;
+}
+
+div.flex-container
+{
+	width: 100%;
 }
 
 input[type="text"].invalidcoord
@@ -21,10 +26,3 @@ input[type="text"].invalidcoord
 	background-color: #FFDDDD;
 }
 
-input.copybutton
-{
-	background:url('copy_icon.png') no-repeat;
-	border: none;
-	height: 32px;
-	width: 32px;
-}

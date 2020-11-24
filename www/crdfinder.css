@@ -1,0 +1,30 @@
+body {
+    font-size: 120%;
+    font-family: sans-serif;
+}
+
+/* div.coord-entry-box div, div.coord div
+{
+    display: inline
+} */
+
+div.coord-title, div.coord-value, div.coord-entry
+{
+    display: inline-block;
+    min-width: 12em;
+}
+
+div.coord-table, div.coord-entry-box
+{
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+    background-color: #CCC;
+}
+
+input.coord-entry
+{
+    width:15em;
+    margin: 0 5px;
+    }
+

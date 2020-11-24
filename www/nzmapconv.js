@@ -140,15 +140,15 @@ nzmapconv.Config.apply=function()
 
 nzmapconv.showConverter=function()
 {
-    $('div#configuration').hide();
-    $('div#converter').show();
+    $('div.configuration').hide();
+    $('div.converter').show();
 }
 
 nzmapconv.showConfiguration=function()
 {
     nzmapconv.Config.loadForm();
-    $('div#converter').hide();
-    $('div#configuration').show();
+    $('div.converter').hide();
+    $('div.configuration').show();
 }
 
 nzmapconv.updateConfiguration=function()
@@ -221,13 +221,15 @@ nzmapconv.setButtonStates=function()
     $("#shownext").prop('disabled',! nzmapconv.haveNext());
 }
 
+
 nzmapconv.setup = function () {
 
     nzmapconv.setButtonStates();
 
-    $('input.coord').each(function () { new nzmapconv.CoordEntry($(this)) });
+    // $('input.coord-entry').each(function () { new nzmapconv.CoordEntry($(this)) });
 
     nzmapconv.CoordEntry.fieldConverted = nzmapconv.addToHistory;
+
 
     $("#doconfig").click( nzmapconv.showConfiguration);
     $("#cancelconfig").click(nzmapconv.showConverter);
@@ -239,9 +241,8 @@ nzmapconv.setup = function () {
     //nzmapconv.Config.reload();
     //zmapconv.Config.apply();
     
-    $('#nojs').hide();
-    $('#needjs').show();
+    $('.nojs').hide();
+    $('.needjs').show();
 }
-
 
 $(document).ready(nzmapconv.setup);
