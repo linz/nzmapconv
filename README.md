@@ -5,7 +5,7 @@ This repository contains javascript code for conversions between the main New Ze
 coordinate systems, as well as a replacement for the nzmapconv desktop application which is 
 no longer supported by Land Information New Zealand (LINZ).
 
-You can [view the coordinate converter online](http://htmlpreview.github.com/?https://github.com/linz/nzmapconv/blob/master/www/index.html).
+You can [view the coordinate converter online](https://linz.github.io/nzmapconv/www/index.html).
 
 This includes code for converting between the NZGD2000 and NZGD49 geodetic datums and the commonest
 projection coordinate systems based on them.  It does not provide conversions to other datums such as 
