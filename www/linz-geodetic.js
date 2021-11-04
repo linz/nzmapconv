@@ -625,3 +625,5 @@ LINZ.Geodetic.Location.prototype.as=function( coordSysCode )
     }
     return this.coordinates[coordSysCode];
 }
+
+module.exports = LINZ;
